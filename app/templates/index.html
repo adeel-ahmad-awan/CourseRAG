@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat UI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="chat-wrapper">
+    <div class="chat-header">AI Assistant</div>
+    <div id="chat-box" class="chat-box"></div>
+    <div class="input-container">
+      <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)" />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    }
+
+    async function sendMessage() {
+      const inputField = document.getElementById("user-input");
+      const message = inputField.value.trim();
+      if (!message) return;
+
+      const chatBox = document.getElementById("chat-box");
+
+      // User message
+      chatBox.innerHTML += `<div class="message user">${message}</div>`;
+      inputField.value = "";
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Typing indicator
+      const botTyping = document.createElement("div");
+      botTyping.classList.add("message", "bot", "typing");
+      botTyping.textContent = "Typing...";
+      chatBox.appendChild(botTyping);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Send to backend
+      const res = await fetch("/ask", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message})
+      });
+      const data = await res.json();
+
+      // Replace typing with actual response
+      botTyping.remove();
+      chatBox.innerHTML += `<div class="message bot">${data.response}</div>`;
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>

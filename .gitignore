@@ -1,0 +1,32 @@
+# Python cache and build files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+
+# Virtual environment
+venv/
+.env/
+.venv/
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Local data & vector DB (generated artifacts)
+app/data/chroma_db/
+app/data/course_data.json
+app/data/course_vectors.faiss
+app/data/course_metadata.json

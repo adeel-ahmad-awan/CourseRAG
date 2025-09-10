@@ -1,0 +1,108 @@
+/* Global */
+body {
+  font-family: "Roboto Mono", Roboto, sans-serif;
+  background: white; /* dark black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  color: #fff;
+}
+
+/* Chat container */
+.chat-wrapper {
+  width: 420px;
+  height: 600px;
+  background: #fff; /* white container */
+  color: #000;
+  border: 2px solid #000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 6px 6px 0px #555555; /* boxy shadow */
+}
+
+/* Header */
+.chat-header {
+  background: #444444;
+  color: #fff;
+  padding: 14px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #000;
+}
+
+/* Chat box */
+.chat-box {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f5f5f5;
+  color: #444444;
+}
+
+/* Messages */
+.message {
+  margin: 8px 0;
+  padding: 12px 14px;
+  font-size: 15px;
+  border: 2px solid #000;
+}
+
+/* User message: dark on white */
+.user {
+  background: #444444;
+  color: #fff;
+  margin-left: auto;
+  text-align: right;
+  width: fit-content;
+}
+
+/* Bot message: light on black border */
+.bot {
+  background: #fff;
+  color: #000;
+  margin-right: auto;
+  text-align: left;
+  width: fit-content;
+}
+
+/* Typing indicator */
+.typing {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Input area */
+.input-container {
+  display: flex;
+  border-top: 2px solid #000;
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: #f0f0f0;
+  color: #000;
+  border-right: 2px solid #000;
+}
+
+button {
+  width: 80px;
+  border: none;
+  background: #000;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #333;
+}
