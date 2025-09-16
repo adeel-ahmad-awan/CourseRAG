@@ -25,7 +25,7 @@ def extract_data_by_header(soup, header_name):
 
             return result
 
-    return None
+    return []
 
 
 def fetch_html_from_url(url):

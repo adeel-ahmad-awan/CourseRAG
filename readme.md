@@ -64,63 +64,12 @@ Create embeddings and store them in **Chroma**:
 python app/create\_vector\_db.py
 ```
 
-### **5\. Run Query Tests**
+### **5\. Run the Flask App**
 
-(If you’ve added a Flask API/Frontend layer, run it here)
+Start the Flask server and access the chat interface:
 
-flask run \--reload  
----
-
-## **🔑 Key Components**
-
-### **data\_extractor.py**
-
-* Scrapes course websites using requests \+ BeautifulSoup.
-
-* Extracts fields like title, description, topics, learning outcomes, prerequisites, and schedules.
-
-* Saves results in structured JSON.
-
-### **create\_vector\_db.py**
-
-* Loads JSON course data.
-
-* Splits text into chunks for embeddings.
-
-* Uses **Ollama embeddings (nomic-embed-text)**.
-
-* Saves vector store (Chroma by default).
-
-### **query\_rag.py**
-
-* Embeds user queries with Ollama.
-
-* Retrieves top-k matches from FAISS/Chroma.
-
-* Generates a contextual answer using **LLaMA-2 (7B)**.
-
----
-
-## **🛠️ Customization**
-
-* Change Ollama models (llama2-7b, mistral, nomic-embed-text, etc.) in scripts.
-
-* Adjust top\_k for retrieval depth.
-
-* Modify jq\_schema in create\_vector\_db.py if your JSON structure changes.
-
-* Extend Flask endpoints to support **chat history, multi-turn conversations, or fine-grained search filters**.
-
----
-
-## **📌 Roadmap / Next Steps**
-
-* Add Flask routes for query/answer endpoints
-
-* Create a simple frontend (React or HTML templates)
-
-* Support multiple data sources (PDFs, CSVs, APIs)
-
-* Implement hybrid search (BM25 \+ embeddings)
-
-* Add course filtering (by date, level, provider)
+```
+python run.py
+```
+* Open a browser and go to: http://127.0.0.1:5000
+* Type your questions in the chat interface; answers are generated using the RAG pipeline.

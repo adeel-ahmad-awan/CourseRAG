@@ -1,4 +1,6 @@
+# app/routes.py
 from flask import Blueprint, render_template, request, jsonify
+from app.utils.query_rag import query_rag
 
 main = Blueprint("main", __name__)
 
@@ -10,5 +12,15 @@ def index():
 def ask():
     data = request.json
     user_message = data.get("message", "")
-    bot_response = f"You said: {user_message}"
-    return jsonify({"response": bot_response})
+
+    if not user_message.strip():
+        return jsonify({"response": "Please enter a message."})
+
+    # Call RAG query function
+    response_text, sources = query_rag(user_message)
+
+    # Return both answer and sources
+    return jsonify({
+        "response": response_text,
+        "sources": sources
+    })

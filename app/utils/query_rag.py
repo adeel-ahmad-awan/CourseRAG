@@ -1,68 +1,39 @@
-import json
-import numpy as np
-from langchain_ollama import OllamaEmbeddings, ChatOllama
+# app/utils/query_rag.py
+from langchain_chroma import Chroma
+from .embeddings_functions import get_embedding_function
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_community.llms.ollama import Ollama
 
-VECTOR_DB_PATH = "app/data/course_vectors.faiss"
-METADATA_PATH = "app/data/course_metadata.json"
+VECTOR_DB_DIR = "app/data/chroma_db"
+embedding_fn = get_embedding_function()
+MODEL = Ollama(model="mistral")
 
-# Initialize Ollama client
-ollama = ChatOllama(model="llama2-7b")  # Or your preferred model
+PROMPT_TEMPLATE = """
+You are an assistant for question-answering tasks. Use the following retrieved context to answer the question.
+If you don't know the answer, say so. Keep it concise.
 
-# Load FAISS index
-index = faiss.read_index(VECTOR_DB_PATH)
+<context>
+{context}
+</context>
 
-# Load metadata
-with open(METADATA_PATH, "r", encoding="utf-8") as f:
-    metadata = json.load(f)
+Question: {question}
+"""
 
+def query_rag(query_text: str):
+    # Reload DB
+    db = Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embedding_fn)
 
-def embed_query(query):
-    """Generate embedding for a query using Ollama."""
-    try:
-        embedding = OllamaEmbeddings(model="llama2-7b").embed_query(query)
-        return np.array(embedding).astype("float32")
-    except Exception as e:
-        print(f"[Error] Failed to embed query: {e}")
-        return None
+    # Retrieve top 5 results
+    results = db.similarity_search_with_score(query_text, k=5)
+    context_text = "\n\n---\n\n".join([doc.page_content for doc, _ in results])
 
+    # Format prompt
+    prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
+    prompt = prompt_template.format(context=context_text, question=query_text)
 
-def query_rag(query, top_k=3):
-    """Retrieve top-k matching courses from FAISS index."""
-    query_vec = embed_query(query)
-    if query_vec is None:
-        return []
+    # Generate response
+    response_text = MODEL.invoke(prompt)
 
-    query_vec = np.expand_dims(query_vec, axis=0)
-    distances, indices = index.search(query_vec, top_k)
-
-    results = []
-    for idx in indices[0]:
-        if idx < len(metadata):
-            results.append(metadata[idx])
-    return results
-
-
-def answer_query(query, top_k=3, show_context=False):
-    """Retrieve relevant courses and generate an answer using Ollama."""
-    matches = query_rag(query, top_k=top_k)
-
-    if not matches:
-        return "No relevant courses found."
-
-    # Combine text for model input
-    context_texts = [f"{match['title']} - {match['url']}" for match in matches]
-    context = "\n".join(context_texts)
-
-    # Generate answer
-    try:
-        response = ollama.generate(
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant answering questions about training courses."},
-                {"role": "user", "content": f"Answer this question based on the following courses:\n{context}\n\nQuestion: {query}"}
-            ]
-        )
-        return response.generations[0].text
-    except Exception as e:
-        return f"Error generating response: {e}"
-
-
+    # Include source info (titles or URLs)
+    sources = [doc.metadata.get("title", doc.metadata.get("url", None)) for doc, _ in results]
+    return response_text, sources
