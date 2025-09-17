@@ -18,6 +18,8 @@ def ask():
 
     # Call RAG query function
     response_text, sources = query_rag(user_message)
+    print("response_text:", response_text)
+    print("sources:", sources)
 
     # Return both answer and sources
     return jsonify({

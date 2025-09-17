@@ -58,8 +58,22 @@
         let responseHtml = `<div class="message bot">${data.response}</div>`;
 
         // Show sources if available
-        if (data.sources && data.sources.length > 0) {
-          responseHtml += `<div class="message bot sources"><strong>Sources:</strong> ${data.sources.join(", ")}</div>`;
+        // Show sources if available (must be an array)
+        if (Array.isArray(data.sources) && data.sources.length > 0) {
+          // Deduplicate and filter falsy values
+          const uniqueSources = Array.from(new Set(data.sources.filter(Boolean)));
+
+          // Build HTML for sources
+          const sourcesHeader = `<div class="sources-header"><strong>Sources</strong> <span class="source-badge">${uniqueSources.length}</span></div>`;
+          const sourceItems = uniqueSources.map(src => {
+            // If src looks like a full URL, use it; otherwise show as text
+            const href = (typeof src === "string" && src.startsWith("http")) ? src : "#";
+            const display = src.length > 60 ? src.slice(0, 57) + "…" : src;
+            return `<a class="source-item" href="${href}" target="_blank" rel="noopener noreferrer" title="${src}">${display}</a>`;
+          }).join("");
+
+          const sourcesHtml = `<div class="message bot sources">${sourcesHeader}<div class="source-list">${sourceItems}</div></div>`;
+          responseHtml += sourcesHtml;
         }
 
         chatBox.innerHTML += responseHtml;

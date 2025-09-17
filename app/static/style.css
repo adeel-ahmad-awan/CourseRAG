@@ -1,7 +1,7 @@
 /* Global */
 body {
   font-family: "Roboto Mono", Roboto, sans-serif;
-  background: white; /* dark black background */
+  background: white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -10,16 +10,98 @@ body {
   color: #fff;
 }
 
+/* Sources container */
+.message.sources {
+  background: #fafafa;
+  border-color: #e0e0e0;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  max-width: 100%;
+  box-shadow: none;
+}
+
+/* Sources header row - title + badge */
+.sources-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sources-header strong {
+  font-weight: 700;
+  color: #333;
+}
+
+/* small badge for count */
+.source-badge {
+  background: #111;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+/* source list as horizontal wrap */
+.source-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* individual source pill */
+.source-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  text-decoration: none;
+  color: #0b4da0;
+  font-weight: 500;
+  max-width: calc(100% - 40px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* link icon before each item */
+.source-item::before {
+  content: "🔗";
+  font-size: 12px;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+/* hover state */
+.source-item:hover {
+  background: #f3f7ff;
+  border-color: #cfe0ff;
+  text-decoration: none;
+  color: #08306a;
+}
+
 /* Chat container */
 .chat-wrapper {
-  width: 420px;
-  height: 600px;
-  background: #fff; /* white container */
+  width: 100%;
+  max-width: 420px;
+  height: 90vh;
+  max-height: 600px;
+  background: #fff;
   color: #000;
   border: 2px solid #000;
   display: flex;
   flex-direction: column;
-  box-shadow: 6px 6px 0px #555555; /* boxy shadow */
+  box-shadow: 6px 6px 0px #555555;
+  margin: 10px;
+  border-radius: 8px;
 }
 
 /* Header */
@@ -49,24 +131,25 @@ body {
   padding: 12px 14px;
   font-size: 15px;
   border: 2px solid #000;
+  width: fit-content;
+  word-wrap: break-word;
+  border-radius: 6px;
 }
 
-/* User message: dark on white */
+/* User message */
 .user {
   background: #444444;
   color: #fff;
   margin-left: auto;
   text-align: right;
-  width: fit-content;
 }
 
-/* Bot message: light on black border */
+/* Bot message */
 .bot {
   background: #fff;
   color: #000;
   margin-right: auto;
   text-align: left;
-  width: fit-content;
 }
 
 /* Typing indicator */
@@ -90,6 +173,7 @@ input[type="text"] {
   background: #f0f0f0;
   color: #000;
   border-right: 2px solid #000;
+  min-width: 0;
 }
 
 button {
@@ -105,4 +189,45 @@ button {
 
 button:hover {
   background: #333;
+}
+
+/* ✅ Responsive adjustments */
+@media (max-width: 600px) {
+  body {
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .chat-wrapper {
+    width: 100%;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .chat-header {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .message {
+    font-size: 14px;
+    padding: 10px 12px;
+    width: fit-content;
+  }
+
+  button {
+    width: 70px;
+    font-size: 13px;
+  }
+
+  .source-list {
+    gap: 6px;
+  }
+  .source-item {
+    flex: 1 1 100%;
+  }
+
 }

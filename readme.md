@@ -1,5 +1,19 @@
 # **Flask RAG Application**
 
+## **Introduction**
+
+This RAG application is designed to make it easier to explore the **NBIS Training Catalogue** (https://nbis.se/training).  
+It automatically parses all available courses from the NBIS website, indexes their details (title, description, outcomes, etc.), and allows users to ask **natural language questions** about the training opportunities.  
+
+For example, users can ask:  
+- *“Which courses cover bioinformatics for beginners?”*  
+- *“Are there any workshops on data analysis in October?”*  
+- *“What courses focus on single-cell genomics?”*  
+
+Instead of manually browsing the course catalogue, the system retrieves the most relevant information and generates **context-aware answers** using a local LLM.  
+
+## **Tech Stack**
+
 This project is a **Retrieval-Augmented Generation (RAG)** application built with **Flask**, **LangChain**, and **Ollama**. It extracts course data from web pages, indexes it into a vector database, and allows users to query relevant training courses with natural language questions.
 
 The pipeline works as follows:
@@ -11,7 +25,15 @@ The pipeline works as follows:
 
 ## **Getting Started**
 
-### **1\. Install Dependencies**
+### **1\. Clone the repo**
+
+```
+git clone git@github.com:adeel-ahmad-awan/CourseRAG.git
+cd CourseRAG
+```
+
+
+### **2\. Install Dependencies**
 
 Make sure you have Python 3.9+ installed.
 
@@ -37,7 +59,7 @@ Then install required packages:
 pip install \-r requirements.txt
 ```
 
-### **2\. Install & Run Ollama**
+### **3\. Install & Run Ollama**
 
 This app relies on [**Ollama**](https://ollama.ai/) for local LLMs and embeddings.
 
@@ -48,7 +70,7 @@ ollama pull llama2:7b
 ollama pull nomic-embed-text
 ```
 
-### **3\. Extract Course Data**
+### **4\. Extract Course Data**
 
 Scrape course pages and save them into app/data/course\_data.json:
 
@@ -56,7 +78,7 @@ Scrape course pages and save them into app/data/course\_data.json:
 python app/data\_extractor.py
 ```
 
-### **4\. Build Vector Database**
+### **5\. Build Vector Database**
 
 Create embeddings and store them in **Chroma**:
 
@@ -64,7 +86,7 @@ Create embeddings and store them in **Chroma**:
 python app/create\_vector\_db.py
 ```
 
-### **5\. Run the Flask App**
+### **6\. Run the Flask App**
 
 Start the Flask server and access the chat interface:
 
@@ -73,3 +95,13 @@ python run.py
 ```
 * Open a browser and go to: http://127.0.0.1:5000
 * Type your questions in the chat interface; answers are generated using the RAG pipeline.
+
+## **Screenshots**
+
+### Home / Chat Interface
+![Home Screenshot](app/static/screenshots/home.png)
+
+### Example Query
+Ask: *“Which courses cover bioinformatics for beginners?”*  
+![Query Screenshot](app/static/screenshots/query.png)
+
