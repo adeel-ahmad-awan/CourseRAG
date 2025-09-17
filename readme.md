@@ -21,7 +21,7 @@ The pipeline works as follows:
 1. **Data Extraction** → Scrapes course data (title, description, outcomes, etc.) into structured JSON.  
 2. **Vector Database Creation** → Splits and embeds the extracted text using **Ollama embeddings**, stored in a **Chroma / FAISS** vector database.  
 3. **Query & Retrieval** → User queries are embedded and matched against the vector DB for the most relevant results.  
-4. **Answer Generation** → A local Ollama LLM (e.g., llama2-7b) generates a contextual response with course recommendations.
+4. **Answer Generation** → A local Ollama LLM (**Mistral**) generates a contextual response with course recommendations.
 
 ## **Getting Started**
 
@@ -55,27 +55,35 @@ source venv/bin/activate
 venv\Scripts\activate
 ```
 Then install required packages:
-```
-pip install \-r requirements.txt
-```
-
-### **3\. Install & Run Ollama**
-
-This app relies on [**Ollama**](https://ollama.ai/) for local LLMs and embeddings.
-
-Download Ollama and pull required models:
 
 ```
-ollama pull llama2:7b  
+pip install -r requirements.txt
+```
+
+### **3. Install & Run Ollama**
+
+This app uses [**Ollama**](https://ollama.ai/) to run local LLMs and generate embeddings.  
+
+Make sure Ollama is installed and running on your system. By default, Ollama serves models at **http://localhost:11434/**, so ensure the service is up before continuing.
+
+
+Download the required models:
+
+```
+ollama pull mistral
 ollama pull nomic-embed-text
 ```
+By default, the app is configured to use:  
+- **nomic-embed-text** → for creating embeddings  
+- **mistral** → as the main language model for generating responses
+
 
 ### **4\. Extract Course Data**
 
 Scrape course pages and save them into app/data/course\_data.json:
 
 ```
-python app/data\_extractor.py
+python app/utils/data_extractor.py
 ```
 
 ### **5\. Build Vector Database**
@@ -83,7 +91,7 @@ python app/data\_extractor.py
 Create embeddings and store them in **Chroma**:
 
 ```
-python app/create\_vector\_db.py
+python app/utils/create_vector_db.py
 ```
 
 ### **6\. Run the Flask App**

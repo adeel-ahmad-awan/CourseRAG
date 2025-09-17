@@ -2,89 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chat UI</title>
+  <title>NBIS Course Assistant</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="chat-wrapper">
-    <div class="chat-header">AI Assistant</div>
-    <div id="chat-box" class="chat-box"></div>
-    <div class="input-container">
-      <input type="text" id="user-input" placeholder="Type a message..." onkeypress="handleKeyPress(event)" />
-      <button onclick="sendMessage()">Send</button>
+  <div class="home-container">
+    <div class="home-header">NBIS Course Assistant</div>
+
+    <div class="home-intro">
+      This assistant helps you explore the
+      <a href="https://nbis.se/training" target="_blank">NBIS Training Catalogue</a>.
+      You can ask natural language questions about upcoming courses and workshops.
     </div>
+
+    <div class="examples">
+      <h3>💡 Example Questions</h3>
+      <ul>
+        <li>Which courses cover bioinformatics for beginners?</li>
+        <li>Are there any workshops on data analysis in October?</li>
+        <li>What courses focus on single-cell genomics?</li>
+      </ul>
+    </div>
+
+    <a href="/chat" class="btn-start">Start Chat</a>
   </div>
-
-  <script>
-    function handleKeyPress(event) {
-      if (event.key === "Enter") {
-        sendMessage();
-      }
-    }
-
-    async function sendMessage() {
-      const inputField = document.getElementById("user-input");
-      const message = inputField.value.trim();
-      if (!message) return;
-
-      const chatBox = document.getElementById("chat-box");
-
-      // Show user message
-      chatBox.innerHTML += `<div class="message user">${message}</div>`;
-      inputField.value = "";
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      // Typing indicator
-      const botTyping = document.createElement("div");
-      botTyping.classList.add("message", "bot", "typing");
-      botTyping.textContent = "Typing...";
-      chatBox.appendChild(botTyping);
-      chatBox.scrollTop = chatBox.scrollHeight;
-
-      try {
-        // Send message to backend
-        const res = await fetch("/ask", {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({message})
-        });
-
-        const data = await res.json();
-
-        // Remove typing indicator
-        botTyping.remove();
-
-        // Show bot response
-        let responseHtml = `<div class="message bot">${data.response}</div>`;
-
-        // Show sources if available
-        // Show sources if available (must be an array)
-        if (Array.isArray(data.sources) && data.sources.length > 0) {
-          // Deduplicate and filter falsy values
-          const uniqueSources = Array.from(new Set(data.sources.filter(Boolean)));
-
-          // Build HTML for sources
-          const sourcesHeader = `<div class="sources-header"><strong>Sources</strong> <span class="source-badge">${uniqueSources.length}</span></div>`;
-          const sourceItems = uniqueSources.map(src => {
-            // If src looks like a full URL, use it; otherwise show as text
-            const href = (typeof src === "string" && src.startsWith("http")) ? src : "#";
-            const display = src.length > 60 ? src.slice(0, 57) + "…" : src;
-            return `<a class="source-item" href="${href}" target="_blank" rel="noopener noreferrer" title="${src}">${display}</a>`;
-          }).join("");
-
-          const sourcesHtml = `<div class="message bot sources">${sourcesHeader}<div class="source-list">${sourceItems}</div></div>`;
-          responseHtml += sourcesHtml;
-        }
-
-        chatBox.innerHTML += responseHtml;
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-      } catch (error) {
-        botTyping.remove();
-        chatBox.innerHTML += `<div class="message bot error">Error: ${error.message}</div>`;
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }
-    }
-  </script>
 </body>
 </html>
